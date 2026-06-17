@@ -1,0 +1,64 @@
+---
+title: "Proof of Concept: Embedded MyOpenMath and Scoring"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - gradethis
+        - jsonlite
+        - base64enc
+      cell-options: 
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{ojs}
+//| echo: false
+
+function ok_checkbox(response, n) {
+  if (!response || response.length === 0)
+    return html`<span style="color:purple">You haven't answered yet.</span>`;
+  if (response.toString() === n)
+    return html`<span style="color:green">Correct ✓</span>`;
+  return html`<span style="color:red">Not Yet! ✗</span>`;
+}
+```
+
+```{ojs}
+//| echo: false
+//| message: false
+//| results: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+```
+
+## Embedded MyOpenMath Exercise
+
+<iframe 
+    src="https://www.myopenmath.com/embedq2.php?id=2126&frame_id=q1&resizer=1"
+    width="100%" height="550" frameborder="0" id="mom-frame">
+  </iframe>
