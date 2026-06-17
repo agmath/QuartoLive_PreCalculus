@@ -59,6 +59,6 @@ mutable ok_response = (response, n) => { return html`Loading...` };
 ## Embedded MyOpenMath Exercise
 
 <iframe 
-    src="https://www.myopenmath.com/embedq2.php?id=2126&frame_id=q1&resizer=1"
+    src="https://www.myopenmath.com/multiembedq.php?id=2126&iframe_resize_id=q1"
     width="100%" height="550" frameborder="0" id="mom-frame">
   </iframe>
