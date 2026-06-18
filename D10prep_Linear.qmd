@@ -55,7 +55,8 @@ mutable momScores = Object.fromEntries(
 
     if (data.action === "updatescores" && Array.isArray(data.scores)) {
       try {
-        const jwtPayload = JSON.parse(atob(data.jwt.split(".")[1]));
+        const b64 = data.jwt.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+        const jwtPayload = JSON.parse(atob(b64));
         const frameId = jwtPayload.targetid;
         const descriptor = problemRegistry[frameId];
         if (descriptor && data.scores.length > 0) {
