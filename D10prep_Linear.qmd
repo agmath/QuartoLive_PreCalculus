@@ -1,0 +1,259 @@
+---
+title: "Prep Work: Linear Functions and Equations"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - gradethis
+        - jsonlite
+        - base64enc
+      cell-options: 
+        persist: true
+    live:
+      show-solutions: true
+---
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{ojs}
+//| echo: false
+//| output: false
+problemRegistry = ({
+  "q1_plot_points":       "q1_plot_points",
+  "q2_slope_two_points":  "q2_slope_two_points",
+  "q3_slope_two_points_again": "q3_slope_two_points_again",
+  "q4_evaluate_function": "q4_evaluate_function",
+  "q5_evaluate_and_solve": "q5_evaluate_and_solve"
+})
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+mutable momScores = Object.fromEntries(
+    Object.values(problemRegistry).map(d => [d, "unattempted"])
+)
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+{
+  window.addEventListener("message", function(event) {
+    if (event.origin !== "https://www.myopenmath.com") return;
+
+    let data;
+    try {
+      data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+    } catch(e) { return; }
+
+    if (data.action === "updatescores" && Array.isArray(data.scores)) {
+      try {
+        const jwtPayload = JSON.parse(atob(data.jwt.split(".")[1]));
+        const frameId = jwtPayload.targetid;
+        const descriptor = problemRegistry[frameId];
+        if (descriptor && data.scores.length > 0) {
+          const current = mutable momScores;
+          const updated = Object.assign({}, current);
+          const raw = data.scores[0];
+          updated[descriptor] = typeof raw === "number" ? String(raw) : raw;
+          mutable momScores = updated;
+        }
+      } catch(e) { return; }
+    }
+  });
+}
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+mom_hash = {
+  momScores;
+
+  const scores = momScores;
+  const questions = {};
+
+  for (const [descriptor, scoreString] of Object.entries(scores)) {
+    if (scoreString === "unattempted") {
+      questions[descriptor] = {
+        raw_scores: "unattempted",
+        parts_total: null,
+        parts_correct: null,
+        score: null,
+        result: "unattempted"
+      };
+    } else {
+      const s = String(scoreString);
+      const parts = s.includes("~")
+        ? s.split("~").map(Number)
+        : [parseFloat(s)];
+      const total = parts.length;
+      const correct = parts.reduce((a, b) => a + b, 0);
+      const score = correct / total;
+      questions[descriptor] = {
+        raw_scores: s,
+        parts_total: total,
+        parts_correct: correct,
+        score: score,
+        result: score === 1 ? "fully_correct" : score === 0 ? "incorrect" : "partially_correct"
+      };
+    }
+  }
+
+  const payload = {
+    notebook: "Prep Work: Linear Functions and Equations",
+    type: "mom_questions",
+    timestamp: new Date().toISOString(),
+    questions: questions
+  };
+
+  return toBase64(JSON.stringify(payload));
+}
+```
+
+## About This Activity
+
+:::{.callout-note}
+## Preparing For: Linear Functions and Equations
+
+In our next class meeting we will investigate **linear functions** — one of the most fundamental and widely-used families of functions in mathematics. You will learn to recognize linear functions of the form $f(x) = mx + b$, interpret their slope and intercept, construct equations of lines from given information, and solve linear equations.
+
+This prep work is designed to take approximately 20 minutes. It reviews three algebraic skills that will be called upon directly during our class discussion. Working through these problems carefully before class will help you engage more confidently with the new material.
+:::
+
+## Objectives
+
+By the end of our class meeting on Linear Functions and Equations, you will be able to:
+
+- Recognize functions of the form $f(x) = mx + b$ as linear functions and identify the slope $m$ and $y$-intercept $(0, b)$.
+- Use the slope formula to find the slope of a line connecting two points.
+- Use point-slope form to construct the equation of a line from given information.
+- Evaluate linear functions and interpret outputs in context.
+- Set up and solve linear equations arising from applied problems.
+
+## Just-In-Time Review
+
+The three skills below are ones you have seen before. We review them here because each one appears directly in today's class discussion. Take your time with the embedded problems — getting these right matters more than getting through them quickly.
+
+---
+
+### Skill 1: Plotting Points in the Coordinate Plane
+
+Every linear function produces a straight line when graphed in the coordinate plane. To understand what that line is doing — where it starts, how steeply it rises or falls — you need to be comfortable placing points accurately on the plane.
+
+Recall that a point $(x, y)$ is located by moving $x$ units along the horizontal axis and $y$ units along the vertical axis. Points with negative coordinates move left or down respectively. The point $(0, 0)$ is the **origin**.
+
+This skill connects directly to our class discussion because we will be reading information about linear functions from their graphs, and we will be verifying solutions to linear equations by checking whether a point lies on a given line.
+
+**Try It! 1:** Plotting points in the Plane.
+
+<iframe 
+    src="https://www.myopenmath.com/multiembedq.php?id=13775&iframe_resize_id=q1_plot_points"
+    width="100%" height="575px" frameborder="0" id="mom-frame_plot_points">
+</iframe>
+
+---
+
+### Skill 2: Finding the Slope of a Line Through Two Points
+
+Slope measures the **rate of change** of a linear function — how much the output changes for every one-unit increase in the input. In our class discussion, slope will be the central object of study: we will interpret it in applied contexts, compute it from data, and use it to build equations of lines.
+
+The slope of the line connecting two points $(x_1, y_1)$ and $(x_2, y_2)$ is:
+
+$$m = \frac{y_2 - y_1}{x_2 - x_1} = \frac{\Delta y}{\Delta x}$$
+
+A positive slope means the function is increasing; a negative slope means it is decreasing. A slope of zero means the function is constant. Keep an eye on the sign — it carries real meaning in context.
+
+**Try It! 2:** Calculate the slope of the line between the two points.
+
+<iframe 
+    src="https://www.myopenmath.com/multiembedq.php?id=173601&iframe_resize_id=q2_slope_two_points"
+    width="100%" height="300px" frameborder="0" id="mom-frame_slope_two_points">
+</iframe>
+
+**Try It! 3:** Calculate the slope of the line connecting the two points below.
+
+<iframe 
+    src="https://www.myopenmath.com/multiembedq.php?id=213345&iframe_resize_id=q3_slope_two_points_again"
+    width="100%" height="260px" frameborder="0" id="mom-frame_slope_two_points_again">
+</iframe>
+
+---
+
+### Skill 3: Evaluating Functions
+
+In our class discussion, you will encounter linear functions like $f(x) = 3x - 7$ and be asked to find outputs for specific inputs, build tables of values, and determine when a function equals a given target value. All of these tasks require fluency with function evaluation.
+
+Recall that $f(a)$ means: **replace every occurrence of $x$ in the formula with $a$, then simplify**. The result is the output the function assigns to the input $a$.
+
+For example, if $f(x) = 3x - 7$, then:
+$$f(4) = 3(4) - 7 = 12 - 7 = 5$$
+
+Notice that evaluating a function is different from solving an equation. When we *evaluate*, we are given the input and we find the output. When we *solve*, we are given the output and we find the input. Both tasks will appear in class.
+
+**Try It! 4:** Evaluate the linear function for a variety of inputs.
+
+<iframe 
+    src="https://www.myopenmath.com/multiembedq.php?id=18017&iframe_resize_id=q4_evaluate_function"
+    width="100%" height="285px" frameborder="0" id="mom-frame_evaluate_function">
+</iframe>
+
+You'll also be asked to solve linear equations. In doing this, remember that 
+
+i) order of operations matters.
+ii) we'll "*undo*" operations in reverse-order.
+iii) subtraction "undoes" addition (and vice-versa).
+iv) division "undoes" multiplication (and vice-versa).
+
+<iframe 
+    src="https://www.myopenmath.com/multiembedq.php?id=15766&iframe_resize_id=q5_evaluate_and_solve"
+    width="100%" height="375px" frameborder="0" id="mom-frame_evaluate_and_solve">
+</iframe>
+
+---
+
+## What To Expect In Class
+
+Our class meeting opens with a real application: a gym offers memberships that include personal training sessions, and we are given pricing information for two different membership tiers. From just two data points, we will recover a complete linear model — finding the cost per session (slope) and the base membership fee ($y$-intercept) — and use it to answer pricing questions.
+
+This application is a preview of something powerful: **two points completely determine a line**. Once you know any two input-output pairs for a linear function, you know everything about it. We will formalize this idea using the slope formula and point-slope form, then practice constructing linear equations from a variety of given information.
+
+The second half of class turns to **linear equations** — situations where we know the output of a linear function and want to find the input. These arise constantly in applied settings: break-even analysis, distance-rate-time problems, and cost modeling all reduce to solving a linear equation.
+
+By the end of class you will have the tools to take a real-world scenario, build a linear model from data, and use that model to answer questions — a complete problem-solving pipeline that will reappear throughout the course.
+
+---
+
+## Submit
+
+If your instructor has asked you to submit this prep work, copy the hash below and submit it using the method they specified. The hash updates automatically as you complete each problem — copy it after finishing all three.
+
+:::{.callout-warning}
+## Question Hash
+
+```{ojs}
+//| echo: false
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${mom_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
