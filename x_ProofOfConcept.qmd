@@ -54,28 +54,23 @@ mutable ok_response = (response, n) => { return html`Loading...` };
 
 ```{ojs}
 //| echo: false
-
 problemRegistry = ({
   "q1_combine_like_terms": "q1_combine_like_terms",
   "q2_simplify_rational":  "q2_simplify_rational",
   "q3_match_trig":         "q3_match_trig"
-});
+})
 ```
 
 ```{ojs}
 //| echo: false
-
 mutable momScores = Object.fromEntries(
   Object.values(problemRegistry).map(d => [d, "unattempted"])
-);
+)
 ```
 
 ```{ojs}
 //| echo: false
-
 {
-  let lastFrameId = null;
-
   window.addEventListener("message", function(event) {
     if (event.origin !== "https://www.myopenmath.com") return;
 
@@ -84,19 +79,19 @@ mutable momScores = Object.fromEntries(
       data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
     } catch(e) { return; }
 
-    if (data.subject === "lti.frameResize" && data.iframe_resize_id) {
-      lastFrameId = data.iframe_resize_id;
-    }
-
     if (data.action === "updatescores" && Array.isArray(data.scores)) {
-      const descriptor = problemRegistry[lastFrameId];
-      if (descriptor && data.scores.length > 0) {
-        const current = mutable momScores;
-        const updated = Object.assign({}, current);
-        const raw = data.scores[0];
-        updated[descriptor] = typeof raw === "number" ? String(raw) : raw;
-        mutable momScores = updated;
-      }
+      try {
+        const jwtPayload = JSON.parse(atob(data.jwt.split(".")[1]));
+        const frameId = jwtPayload.targetid;
+        const descriptor = problemRegistry[frameId];
+        if (descriptor && data.scores.length > 0) {
+          const current = mutable momScores;
+          const updated = Object.assign({}, current);
+          const raw = data.scores[0];
+          updated[descriptor] = typeof raw === "number" ? String(raw) : raw;
+          mutable momScores = updated;
+        }
+      } catch(e) { return; }
     }
   });
 }
@@ -104,21 +99,16 @@ mutable momScores = Object.fromEntries(
 
 ```{ojs}
 //| echo: false
-
-// ── Hash utilities ────────────────────────────────────────────────────────────
 function toBase64(str) {
   return btoa(unescape(encodeURIComponent(str)));
 }
 
-// ── Reactive hash ─────────────────────────────────────────────────────────────
-// Re-evaluates automatically whenever momScores changes.
 mom_hash = {
-  momScores;   // reactive dependency
+  momScores;
 
   const scores = momScores;
-
-  // Build per-question summary objects
   const questions = {};
+
   for (const [descriptor, scoreString] of Object.entries(scores)) {
     if (scoreString === "unattempted") {
       questions[descriptor] = {
@@ -129,15 +119,15 @@ mom_hash = {
         result: "unattempted"
       };
     } else {
-      const parts = scoreString.includes("~")
-        ? scoreString.split("~").map(Number)
-        : [parseFloat(scoreString)];
-      const total = scoreString.includes("~") ? parts.length : 1;
+      const s = String(scoreString);
+      const parts = s.includes("~")
+        ? s.split("~").map(Number)
+        : [parseFloat(s)];
+      const total = parts.length;
       const correct = parts.reduce((a, b) => a + b, 0);
       const score = correct / total;
-    
       questions[descriptor] = {
-        raw_scores: scoreString,
+        raw_scores: s,
         parts_total: total,
         parts_correct: correct,
         score: score,
