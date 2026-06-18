@@ -137,17 +137,20 @@ This prep work is designed to take approximately 20 minutes. It reviews three al
 
 ## Objectives
 
-By the end of our class meeting on Linear Functions and Equations, you will be able to:
+You'll enter our class meeting on Linear Functions and Equations able to:
 
-- Recognize functions of the form $f(x) = mx + b$ as linear functions and identify the slope $m$ and $y$-intercept $(0, b)$.
+- Identify the location of a point in the $xy$-plane and plot it.
 - Use the slope formula to find the slope of a line connecting two points.
-- Use point-slope form to construct the equation of a line from given information.
-- Evaluate linear functions and interpret outputs in context.
-- Set up and solve linear equations arising from applied problems.
+- Evaluate a function by substituting a numerical input and simplifying.
+- Solve an equation using addition, subtraction, multiplication, and division to isolate the variable.
 
 ### Just-In-Time Review
 
-The three skills below are ones you have seen before. We review them here because each one appears directly in today's class discussion. Take your time with the embedded problems — getting these right matters more than getting through them quickly.
+Through this section, you'll experience a refresher on several foundational skills that will be critical to our ability to analyse linear functions and equations. Take your time with the embedded problems — getting these right matters more than getting through them quickly. If you struggle on any of the skill content below, plan to 
+
+i) ask questions at the beginning of our class meeting.
+ii) visit office hours for clarification.
+iii) visit the walk-in tutoring center for extra practice to master these skills.
 
 ---
 
@@ -155,9 +158,9 @@ The three skills below are ones you have seen before. We review them here becaus
 
 Every linear function produces a straight line when graphed in the coordinate plane. To understand what that line is doing — where it starts, how steeply it rises or falls — you need to be comfortable placing points accurately on the plane.
 
-Recall that a point $(x, y)$ is located by moving $x$ units along the horizontal axis and $y$ units along the vertical axis. Points with negative coordinates move left or down respectively. The point $(0, 0)$ is the **origin**.
+Recall that a point $(x, y)$ is located by moving $x$ units along the horizontal axis and $y$ units along the vertical axis. Points with negative coordinates move left or down respectively. The point $(0, 0)$ is the point at which the $x$-axis and $y$-axis intersect; it is often called the **origin**.
 
-This skill connects directly to our class discussion because we will be reading information about linear functions from their graphs, and we will be verifying solutions to linear equations by checking whether a point lies on a given line.
+This skill connects directly to our class discussion because we will be reading information about linear functions from their graphs, and we will be verifying solutions to linear equations by checking whether a point lies on a given line. We'll also encounter scenarios in which we are given one or two points along a line and are asked to construct the equation describing the line. Being able to identify the location of points in the coordinate plane and to compare their positions will be critical to our success.
 
 **Try It! 1:** Plotting points in the Plane.
 
@@ -219,8 +222,10 @@ ii) we'll "*undo*" operations in reverse-order.
 iii) subtraction "undoes" addition (and vice-versa).
 iv) division "undoes" multiplication (and vice-versa).
 
+**Try It! 5:** Evaluate the linear function and solve for the requested output.
+
 <iframe 
-    src="https://www.myopenmath.com/multiembedq.php?id=15766&iframe_resize_id=q5_evaluate_and_solve"
+    src="https://www.myopenmath.com/multiembedq.php?id=15766&showanswer=0&seed=123&iframe_resize_id=q5_evaluate_and_solve"
     width="100%" height="375px" frameborder="0" id="mom-frame_evaluate_and_solve">
 </iframe>
 
