@@ -127,8 +127,6 @@ mom_hash = {
 }
 ```
 
-## About This Activity
-
 :::{.callout-note}
 ## Preparing For: Linear Functions and Equations
 
@@ -147,13 +145,13 @@ By the end of our class meeting on Linear Functions and Equations, you will be a
 - Evaluate linear functions and interpret outputs in context.
 - Set up and solve linear equations arising from applied problems.
 
-## Just-In-Time Review
+### Just-In-Time Review
 
 The three skills below are ones you have seen before. We review them here because each one appears directly in today's class discussion. Take your time with the embedded problems — getting these right matters more than getting through them quickly.
 
 ---
 
-### Skill 1: Plotting Points in the Coordinate Plane
+#### Skill 1: Plotting Points in the Coordinate Plane
 
 Every linear function produces a straight line when graphed in the coordinate plane. To understand what that line is doing — where it starts, how steeply it rises or falls — you need to be comfortable placing points accurately on the plane.
 
@@ -170,7 +168,7 @@ This skill connects directly to our class discussion because we will be reading 
 
 ---
 
-### Skill 2: Finding the Slope of a Line Through Two Points
+#### Skill 2: Finding the Slope of a Line Through Two Points
 
 Slope measures the **rate of change** of a linear function — how much the output changes for every one-unit increase in the input. In our class discussion, slope will be the central object of study: we will interpret it in applied contexts, compute it from data, and use it to build equations of lines.
 
@@ -196,7 +194,7 @@ A positive slope means the function is increasing; a negative slope means it is 
 
 ---
 
-### Skill 3: Evaluating Functions
+#### Skill 3: Evaluating Functions
 
 In our class discussion, you will encounter linear functions like $f(x) = 3x - 7$ and be asked to find outputs for specific inputs, build tables of values, and determine when a function equals a given target value. All of these tasks require fluency with function evaluation.
 
@@ -228,7 +226,7 @@ iv) division "undoes" multiplication (and vice-versa).
 
 ---
 
-## What To Expect In Class
+### What To Expect In Class
 
 Our class meeting opens with a real application: a gym offers memberships that include personal training sessions, and we are given pricing information for two different membership tiers. From just two data points, we will recover a complete linear model — finding the cost per session (slope) and the base membership fee ($y$-intercept) — and use it to answer pricing questions.
 
