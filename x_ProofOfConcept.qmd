@@ -21,39 +21,9 @@ format:
 {{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 {{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
 
-```{webr}
-#| edit: false
-#| output: false
-#| define:
-#|   - ok_response
-library(htmltools)
-ok_response <- function(response, n) {
-  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
-  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
-  else div(HTML("Incorrect ✗"), style = "color: red")
-}
-```
-
 ```{ojs}
 //| echo: false
-function ok_checkbox(response, n) {
-  if (!response || response.length === 0)
-    return html`<span style="color:purple">You haven't answered yet.</span>`;
-  if (response.toString() === n)
-    return html`<span style="color:green">Correct ✓</span>`;
-  return html`<span style="color:red">Not Yet! ✗</span>`;
-}
-```
-
-```{ojs}
-//| echo: false
-//| message: false
-//| results: false
-mutable ok_response = (response, n) => { return html`Loading...` };
-```
-
-```{ojs}
-//| echo: false
+//| output: false
 problemRegistry = ({
   "q1_combine_like_terms": "q1_combine_like_terms",
   "q2_simplify_rational":  "q2_simplify_rational",
@@ -63,6 +33,7 @@ problemRegistry = ({
 
 ```{ojs}
 //| echo: false
+//| output: false
 mutable momScores = Object.fromEntries(
   Object.values(problemRegistry).map(d => [d, "unattempted"])
 )
@@ -70,6 +41,7 @@ mutable momScores = Object.fromEntries(
 
 ```{ojs}
 //| echo: false
+//| output: false
 {
   window.addEventListener("message", function(event) {
     if (event.origin !== "https://www.myopenmath.com") return;
@@ -99,6 +71,7 @@ mutable momScores = Object.fromEntries(
 
 ```{ojs}
 //| echo: false
+//| output: false
 function toBase64(str) {
   return btoa(unescape(encodeURIComponent(str)));
 }
@@ -153,7 +126,7 @@ mom_hash = {
 
 <iframe 
     src="https://www.myopenmath.com/multiembedq.php?id=1252&iframe_resize_id=q1_combine_like_terms"
-    width="100%" height="550" frameborder="0" id="mom-frame_combine_like_terms">
+    width="100%" frameborder="0" id="mom-frame_combine_like_terms">
 </iframe>
 
 ### Simplify a Rational Expression
