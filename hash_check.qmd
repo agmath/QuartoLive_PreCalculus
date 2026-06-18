@@ -1,0 +1,140 @@
+---
+title: "MyOpenMath Embedded Question Hash Checker"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - jsonlite
+        - base64enc
+        - kableExtra
+      cell-options: 
+        persist: false
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+:::{.callout-note}
+## About
+This page allows students and instructors to verify the results encoded in a MyOpenMath question hash. Paste a hash into the code cell below to see a transparent summary of the scores it encodes, including per-question part breakdowns, decimal scores, and overall activity summaries.
+:::
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(jsonlite)
+library(base64enc)
+library(dplyr)
+library(kableExtra)
+
+decode <- function(hash) {
+  fromJSON(rawToChar(base64decode(hash)))
+}
+
+process_mom_questions <- function(hash) {
+  decoded <- decode(hash)
+  notebook <- decoded$notebook
+  questions <- decoded$questions
+
+  q_names <- names(questions)
+  n <- length(q_names)
+
+  raw_scores   <- character(n)
+  parts_total  <- integer(n)
+  parts_correct <- numeric(n)
+  score        <- numeric(n)
+  result       <- character(n)
+
+  for (i in seq_along(q_names)) {
+    q <- questions[[q_names[i]]]
+    if (q$result == "unattempted") {
+      raw_scores[i]    <- "unattempted"
+      parts_total[i]   <- NA_integer_
+      parts_correct[i] <- NA_real_
+      score[i]         <- NA_real_
+      result[i]        <- "unattempted"
+    } else {
+      raw_scores[i]    <- q$raw_scores
+      parts_total[i]   <- q$parts_total
+      parts_correct[i] <- q$parts_correct
+      score[i]         <- round(q$score, 4)
+      result[i]        <- q$result
+    }
+  }
+
+  tibble(
+    notebook      = notebook,
+    question      = q_names,
+    raw_scores    = raw_scores,
+    parts_total   = parts_total,
+    parts_correct = parts_correct,
+    score         = score,
+    result        = result
+  )
+}
+
+summarise_mom_questions <- function(df) {
+  attempted <- df |> filter(result != "unattempted")
+  
+  total_parts         <- sum(attempted$parts_total, na.rm = TRUE)
+  total_correct       <- sum(attempted$parts_correct, na.rm = TRUE)
+  overall_by_parts    <- if (total_parts > 0) round(total_correct / total_parts, 4) else NA_real_
+  overall_by_mean     <- if (nrow(attempted) > 0) round(mean(attempted$score, na.rm = TRUE), 4) else NA_real_
+  n_attempted         <- nrow(attempted)
+  n_total             <- nrow(df)
+  n_fully_correct     <- sum(attempted$result == "fully_correct")
+  n_partial           <- sum(attempted$result == "partially_correct")
+  n_incorrect         <- sum(attempted$result == "incorrect")
+
+  tibble(
+    notebook                   = df$notebook[1],
+    questions_attempted        = paste0(n_attempted, " of ", n_total),
+    fully_correct              = n_fully_correct,
+    partially_correct          = n_partial,
+    incorrect                  = n_incorrect,
+    total_parts_correct        = total_correct,
+    total_parts_possible       = total_parts,
+    overall_score_by_parts     = overall_by_parts,
+    overall_score_by_mean      = overall_by_mean
+  )
+}
+```
+
+### MyOpenMath Question Hash Check
+
+Paste the hash from the `Question Hash` box near the end of the activity between the quotes (`""`) on line 1, then click `Run Code`.
+
+```{webr}
+mom_hash <- ""
+
+df <- process_mom_questions(mom_hash)
+
+cat("Activity:", df$notebook[1], "\n\n")
+
+cat("--- Per-Question Results ---\n")
+df |>
+  select(question, parts_total, parts_correct, score, result) |>
+  kable(col.names = c("Question", "Parts Total", "Parts Correct", "Score", "Result")) |>
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+```{webr}
+cat("--- Activity Summary ---\n")
+summarise_mom_questions(df) |>
+  select(-notebook) |>
+  kable(col.names = c(
+    "Attempted", "Fully Correct", "Partially Correct", "Incorrect",
+    "Parts Correct", "Parts Possible", "Score (by parts)", "Score (by mean)"
+  )) |>
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
